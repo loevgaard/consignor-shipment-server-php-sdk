@@ -1,8 +1,8 @@
 {
-    "name": "loevgaard/consignor-php-sdk",
+    "name": "loevgaard/consignor-shipment-server-php-sdk",
     "type": "library",
     "description": "A PHP SDK for Consignor",
-    "homepage": "https://github.com/loevgaard/consignor-php-sdk",
+    "homepage": "https://github.com/loevgaard/consignor-shipment-server-php-sdk",
     "license": "MIT",
     "authors": [
         {
@@ -28,13 +28,14 @@
         "friendsofphp/php-cs-fixer": "^2.0"
     },
     "autoload": {
+        "files": ["src/functions_include.php"],
         "psr-4": {
-            "Loevgaard\\Consignor\\": "src"
+            "Loevgaard\\Consignor\\ShipmentServer\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Loevgaard\\Consignor\\": "tests"
+            "Loevgaard\\Consignor\\ShipmentServer\\": "tests"
         }
     },
     "scripts": {

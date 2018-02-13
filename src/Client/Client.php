@@ -1,12 +1,13 @@
 <?php
-namespace Loevgaard\Consignor\Client;
+namespace Loevgaard\Consignor\ShipmentServer\Client;
 
 use Assert\Assert;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
-use Psr\Http\Message\RequestInterface;
+use Loevgaard\Consignor\ShipmentServer\Request\RequestInterface;
+use Psr\Http\Message\RequestInterface as PsrRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Client
@@ -24,6 +25,16 @@ class Client
      * @var string
      */
     protected $productionServerUrl = 'https://www.shipmentserver.com/ship/ShipmentServerModule.dll';
+
+    /**
+     * @var string
+     */
+    protected $actor;
+
+    /**
+     * @var string
+     */
+    protected $key;
 
     /**
      * Should be either 'dev' or 'production'
@@ -45,19 +56,21 @@ class Client
     /**
      * This is the last request
      *
-     * @var RequestInterface
+     * @var PsrRequestInterface|null
      */
     protected $request;
 
     /**
      * This is the last response
      *
-     * @var ResponseInterface
+     * @var ResponseInterface|null
      */
     protected $response;
 
-    public function __construct(HttpClient $httpClient = null, RequestFactory $requestFactory = null, string $environment = 'production')
+    public function __construct(string $actor, string $key, HttpClient $httpClient = null, RequestFactory $requestFactory = null, string $environment = 'production')
     {
+        $this->actor = $actor;
+        $this->key = $key;
         $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
         $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
 
@@ -65,7 +78,7 @@ class Client
         $this->environment = $environment;
     }
 
-    public function doRequest()
+    public function doRequest(RequestInterface $request) : array
     {
         // resetting last request and response
         $this->request = null;
@@ -74,16 +87,36 @@ class Client
         // deduce url
         $url = $this->environment === 'dev' ? $this->testServerUrl : $this->productionServerUrl;
 
-        // create headers array
-        $headers = [
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json'
-        ];
+        // convert body to post string and inject auth and command params
+        // @todo ask consignor if it's true that ALL requests are POST requests
+        $body = $request->getBody();
+        $body['actor'] = $this->actor;
+        $body['key'] = $this->key;
+        $body['command'] = $request->getCommand();
+        $body = http_build_query($body);
 
         // create request
-        $this->request = $this->requestFactory->createRequest('POST', $url, $headers);
+        $this->request = $this->requestFactory->createRequest($request->getMethod(), $url, $request->getHeaders(), $body);
 
         // send request
         $this->response = $this->httpClient->sendRequest($this->request);
+
+        return $this->decodeJson((string)$this->response->getBody());
+    }
+
+    /**
+     * @return null|PsrRequestInterface
+     */
+    public function getRequest(): ?PsrRequestInterface
+    {
+        return $this->request;
+    }
+
+    /**
+     * @return null|ResponseInterface
+     */
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
     }
 }
