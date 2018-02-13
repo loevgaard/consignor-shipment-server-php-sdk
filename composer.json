@@ -1,0 +1,53 @@
+{
+    "name": "loevgaard/consignor-php-sdk",
+    "type": "library",
+    "description": "A PHP SDK for Consignor",
+    "homepage": "https://github.com/loevgaard/consignor-php-sdk",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joachim Løvgaard",
+            "email": "joachim@loevgaard.dk",
+            "homepage": "http://www.loevgaard.dk"
+        }
+    ],
+    "require": {
+        "php": "~7.1",
+        "beberlei/assert": "^2.9",
+        "php-http/client-implementation": "^1.0",
+        "php-http/discovery": "^1.0",
+        "php-http/httplug": "^1.0",
+        "php-http/message-factory": "^1.0",
+        "psr/http-message": "^1.0"
+    },
+    "require-dev": {
+        "guzzlehttp/psr7": "^1.0",
+        "php-http/mock-client": "^1.0",
+        "php-http/message": "^1.0",
+        "phpunit/phpunit" : "~5.5||~6.0",
+        "friendsofphp/php-cs-fixer": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Loevgaard\\Consignor\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Loevgaard\\Consignor\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "./vendor/bin/php-cs-fixer fix --verbose --dry-run",
+        "fix-style": "./vendor/bin/php-cs-fixer fix --verbose"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
