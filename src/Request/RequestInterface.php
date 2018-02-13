@@ -3,57 +3,56 @@ namespace Loevgaard\Consignor\ShipmentServer\Request;
 
 interface RequestInterface
 {
-    // @todo convert camelcase to upper snake case
-    const COMMAND_GetShipmentAlternatives = 'GetShipmentAlternatives';
-    const COMMAND_GetPOArticles = 'GetPOArticles';
-    const COMMAND_GetLeadGroups = 'GetLeadGroups';
-    const COMMAND_GetLeadGroupDetails = 'GetLeadGroupDetails';
-    const COMMAND_GetDefaultShipment = 'GetDefaultShipment';
-    const COMMAND_GetDGList = 'GetDGList';
-    const COMMAND_GetDGEnums = 'GetDGEnums';
-    const COMMAND_GetDGArticleNoInfoList = 'GetDGArticleNoInfoList';
-    const COMMAND_GetContacts = 'GetContacts';
-    const COMMAND_GetContactProfile = 'GetContactProfile';
-    const COMMAND_AddShippingRulesPostCodeFile = 'AddShippingRulesPostCodeFile';
-    const COMMAND_ApplyDefaultsOnShipment = 'ApplyDefaultsOnShipment';
-    const COMMAND_CheckHealth = 'CheckHealth';
-    const COMMAND_CreateLeadShipment = 'CreateLeadShipment';
-    const COMMAND_CreateStack = 'CreateStack';
-    const COMMAND_DeleteContact = 'DeleteContact';
-    const COMMAND_DeleteLine = 'DeleteLine';
-    const COMMAND_DeleteShippingRulesPostCodeFile = 'DeleteShippingRulesPostCodeFile';
-    const COMMAND_DeleteShippingRules = 'DeleteShippingRules';
-    const COMMAND_DeletePackage = 'DeletePackage';
-    const COMMAND_DeleteShipment = 'DeleteShipment';
-    const COMMAND_DeleteStack = 'DeleteStack';
-    const COMMAND_GetBatchDetails = 'GetBatchDetails';
-    const COMMAND_GetBatchList = 'GetBatchList';
-    const COMMAND_GetBatchReport = 'GetBatchReport';
-    const COMMAND_GetBatchShipments = 'GetBatchShipments';
-    const COMMAND_GetDocument = 'GetDocument';
-    const COMMAND_GetDocumentList = 'GetDocumentList';
+    const COMMAND_GET_SHIPMENT_ALTERNATIVES = 'GetShipmentAlternatives';
+    const COMMAND_GET_PO_ARTICLES = 'GetPOArticles';
+    const COMMAND_GET_LEAD_GROUPS = 'GetLeadGroups';
+    const COMMAND_GET_LEAD_GROUP_DETAILS = 'GetLeadGroupDetails';
+    const COMMAND_GET_DEFAULT_SHIPMENT = 'GetDefaultShipment';
+    const COMMAND_GET_DG_LIST = 'GetDGList';
+    const COMMAND_GET_DG_ENUMS = 'GetDGEnums';
+    const COMMAND_GET_DG_ARTICLE_NO_INFO_LIST = 'GetDGArticleNoInfoList';
+    const COMMAND_GET_CONTACTS = 'GetContacts';
+    const COMMAND_GET_CONTACT_PROFILE = 'GetContactProfile';
+    const COMMAND_ADD_SHIPPING_RULES_POST_CODE_FILE = 'AddShippingRulesPostCodeFile';
+    const COMMAND_APPLY_DEFAULTS_ON_SHIPMENT = 'ApplyDefaultsOnShipment';
+    const COMMAND_CHECK_HEALTH = 'CheckHealth';
+    const COMMAND_CREATE_LEAD_SHIPMENT = 'CreateLeadShipment';
+    const COMMAND_CREATE_STACK = 'CreateStack';
+    const COMMAND_DELETE_CONTACT = 'DeleteContact';
+    const COMMAND_DELETE_LINE = 'DeleteLine';
+    const COMMAND_DELETE_SHIPPING_RULES_POST_CODE_FILE = 'DeleteShippingRulesPostCodeFile';
+    const COMMAND_DELETE_SHIPPING_RULES = 'DeleteShippingRules';
+    const COMMAND_DELETE_PACKAGE = 'DeletePackage';
+    const COMMAND_DELETE_SHIPMENT = 'DeleteShipment';
+    const COMMAND_DELETE_STACK = 'DeleteStack';
+    const COMMAND_GET_BATCH_DETAILS = 'GetBatchDetails';
+    const COMMAND_GET_BATCH_LIST = 'GetBatchList';
+    const COMMAND_GET_BATCH_REPORT = 'GetBatchReport';
+    const COMMAND_GET_BATCH_SHIPMENTS = 'GetBatchShipments';
+    const COMMAND_GET_DOCUMENT = 'GetDocument';
+    const COMMAND_GET_DOCUMENT_LIST = 'GetDocumentList';
     const COMMAND_GET_DRAFT_COUNT = 'GetDraftCount';
-    const COMMAND_GetDraftShipments = 'GetDraftShipments';
-    const COMMAND_GetDropPoints = 'GetDropPoints';
-    const COMMAND_GetInboxCount = 'GetInboxCount';
-    const COMMAND_GetInboxShipments = 'GetInboxShipments';
-    const COMMAND_GetInsuranceClaimURL = 'GetInsuranceClaimURL';
-    const COMMAND_GetInsurancePrice = 'GetInsurancePrice';
-    const COMMAND_GetPackage = 'GetPackage';
-    const COMMAND_GetPrinterFonts = 'GetPrinterFonts';
-    const COMMAND_GetProducts = 'GetProducts';
-    const COMMAND_GetSenderAddress = 'GetSenderAddress';
-    const COMMAND_GetShipment = 'GetShipment';
-    const COMMAND_GetShipmentPrice = 'GetShipmentPrice';
-    const COMMAND_GetStacks = 'GetStacks';
-    const COMMAND_GetStackShipments = 'GetStackShipments';
-    const COMMAND_GetTrackingURL = 'GetTrackingURL';
-    const COMMAND_ReprintLabels = 'ReprintLabels';
-    const COMMAND_SaveShipment = 'SaveShipment';
+    const COMMAND_GET_DRAFT_SHIPMENTS = 'GetDraftShipments';
+    const COMMAND_GET_DROP_POINTS = 'GetDropPoints';
+    const COMMAND_GET_INBOX_COUNT = 'GetInboxCount';
+    const COMMAND_GET_INBOX_SHIPMENTS = 'GetInboxShipments';
+    const COMMAND_GET_INSURANCE_CLAIM_URL = 'GetInsuranceClaimURL';
+    const COMMAND_GET_INSURANCE_PRICE = 'GetInsurancePrice';
+    const COMMAND_GET_PACKAGE = 'GetPackage';
+    const COMMAND_GET_PRINTER_FONTS = 'GetPrinterFonts';
+    const COMMAND_GET_PRODUCTS = 'GetProducts';
+    const COMMAND_GET_SENDER_ADDRESS = 'GetSenderAddress';
+    const COMMAND_GET_SHIPMENT = 'GetShipment';
+    const COMMAND_GET_SHIPMENT_PRICE = 'GetShipmentPrice';
+    const COMMAND_GET_STACKS = 'GetStacks';
+    const COMMAND_GET_STACK_SHIPMENTS = 'GetStackShipments';
+    const COMMAND_GET_TRACKING_URL = 'GetTrackingURL';
+    const COMMAND_REPRINT_LABELS = 'ReprintLabels';
+    const COMMAND_SAVE_SHIPMENT = 'SaveShipment';
     const COMMAND_SUBMIT_SHIPMENT = 'SubmitShipment';
-    const COMMAND_TransmitShipments = 'TransmitShipments';
-    const COMMAND_TransmitStack = 'TransmitStack';
-    const COMMAND_ValidateShipment = 'ValidateShipment';
+    const COMMAND_TRANSMIT_SHIPMENTS = 'TransmitShipments';
+    const COMMAND_TRANSMIT_STACK = 'TransmitStack';
+    const COMMAND_VALIDATE_SHIPMENT = 'ValidateShipment';
 
     /**
      * Must return a body array or an empty array if no body should be sent
@@ -68,4 +67,11 @@ interface RequestInterface
      * @return string
      */
     public function getCommand() : string;
+
+    /**
+     * Must return the response class that matches the request, else use the generic Response class
+     *
+     * @return string
+     */
+    public function getResponseClass() : string;
 }

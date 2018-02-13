@@ -5,14 +5,12 @@ use GuzzleHttp\Psr7\Response;
 use Http\Mock\Client as HttpClient;
 use Loevgaard\Consignor\ShipmentServer\Client\Client;
 use Loevgaard\Consignor\ShipmentServer\Request\GetDraftCountRequest;
+use Loevgaard\Consignor\ShipmentServer\Response\ResponseInterface;
 use PHPUnit\Framework\TestCase;
 use function GuzzleHttp\Psr7\parse_query;
 
 final class ClientTest extends TestCase
 {
-    /**
-     * @throws \Loevgaard\Consignor\ShipmentServer\Exception\InvalidJsonException
-     */
     public function testDoRequest()
     {
         $httpClient = new HttpClient();
@@ -32,6 +30,10 @@ final class ClientTest extends TestCase
         $this->assertSame('63', $params['actor']);
         $this->assertSame('sample', $params['key']);
         $this->assertSame('GetDraftCount', $params['command']);
+        $this->assertInstanceOf(ResponseInterface::class, $res);
         $this->assertSame(800, $res['Count']);
+        $this->assertEquals($response, $client->getResponse());
+        $this->assertEquals($request, $client->getRequest());
+        $this->assertSame('63', $client->getActor());
     }
 }

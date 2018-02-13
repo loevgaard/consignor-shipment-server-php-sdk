@@ -2,6 +2,7 @@
 namespace Loevgaard\Consignor\ShipmentServer\Request;
 
 use Loevgaard\Consignor\ShipmentServer\Exception\EncodeJsonException;
+use Loevgaard\Consignor\ShipmentServer\Response\Response;
 use function Loevgaard\Consignor\ShipmentServer\encodeJson;
 
 abstract class Request implements RequestInterface
@@ -32,5 +33,10 @@ abstract class Request implements RequestInterface
         }
 
         return $body;
+    }
+
+    public function getResponseClass(): string
+    {
+        return Response::class;
     }
 }

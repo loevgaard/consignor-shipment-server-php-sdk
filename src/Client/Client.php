@@ -3,18 +3,16 @@ namespace Loevgaard\Consignor\ShipmentServer\Client;
 
 use Assert\Assert;
 use Http\Client\Common\Plugin\ErrorPlugin;
-use Http\Client\Common\Plugin\HeaderSetPlugin;
 use Http\Client\Common\PluginClient;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
-use Loevgaard\Consignor\ShipmentServer\Exception\InvalidJsonException;
 use Loevgaard\Consignor\ShipmentServer\Request\RequestInterface;
+use Loevgaard\Consignor\ShipmentServer\Response\ResponseInterface;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use function GuzzleHttp\Psr7\build_query;
-use function Loevgaard\Consignor\ShipmentServer\decodeJson;
 
 class Client
 {
@@ -70,9 +68,9 @@ class Client
     protected $request;
 
     /**
-     * This is the last response
+     * This is the last PSR response (differs from the response returned form the doRequest method)
      *
-     * @var ResponseInterface|null
+     * @var PsrResponseInterface|null
      */
     protected $response;
 
@@ -82,10 +80,6 @@ class Client
         $this->key = $key;
 
         $plugins[] = new ErrorPlugin();
-        $plugins[] = new HeaderSetPlugin([
-            'Content-Type' => 'application/x-www-form-urlencoded',
-            'Accept' => 'application/json'
-        ]);
         $this->httpClient = new PluginClient($httpClient ?: HttpClientDiscovery::find(), $plugins);
         $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
 
@@ -95,10 +89,9 @@ class Client
 
     /**
      * @param RequestInterface $request
-     * @return array
-     * @throws InvalidJsonException
+     * @return ResponseInterface
      */
-    public function doRequest(RequestInterface $request) : array
+    public function doRequest(RequestInterface $request) : ResponseInterface
     {
         // resetting last request and response
         $this->request = null;
@@ -114,13 +107,22 @@ class Client
         $body['command'] = $request->getCommand();
         $body = build_query($body);
 
+        // set headers
+        $headers = [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Accept' => 'application/json'
+        ];
+
         // create request
-        $this->request = $this->requestFactory->createRequest('POST', $url, [], $body);
+        // @todo this is not necessarily the real request, since it can be manipulated by plugins, figure out a way to retrieve the correct one
+        $this->request = $this->requestFactory->createRequest('POST', $url, $headers, $body);
 
         // send request
         $this->response = $this->httpClient->sendRequest($this->request);
 
-        return decodeJson((string)$this->response->getBody());
+        $responseClass = $request->getResponseClass();
+
+        return new $responseClass($this->response);
     }
 
     /**
@@ -140,9 +142,9 @@ class Client
     }
 
     /**
-     * @return null|ResponseInterface
+     * @return null|PsrResponseInterface
      */
-    public function getResponse(): ?ResponseInterface
+    public function getResponse(): ?PsrResponseInterface
     {
         return $this->response;
     }
