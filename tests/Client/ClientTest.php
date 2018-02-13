@@ -10,13 +10,16 @@ use function GuzzleHttp\Psr7\parse_query;
 
 final class ClientTest extends TestCase
 {
+    /**
+     * @throws \Loevgaard\Consignor\ShipmentServer\Exception\InvalidJsonException
+     */
     public function testDoRequest()
     {
         $httpClient = new HttpClient();
         $response = new Response(200, [], '{"Count": 800}');
         $httpClient->addResponse($response);
 
-        $client = new Client('63', 'sample', $httpClient, null, Client::ENV_DEV);
+        $client = new Client('63', 'sample', [], $httpClient, null, Client::ENV_DEV);
         $res = $client->doRequest(new GetDraftCountRequest());
         $request = $httpClient->getRequests()[0];
 

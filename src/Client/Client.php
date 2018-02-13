@@ -2,10 +2,14 @@
 namespace Loevgaard\Consignor\ShipmentServer\Client;
 
 use Assert\Assert;
+use Http\Client\Common\Plugin\ErrorPlugin;
+use Http\Client\Common\Plugin\HeaderSetPlugin;
+use Http\Client\Common\PluginClient;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
+use Loevgaard\Consignor\ShipmentServer\Exception\InvalidJsonException;
 use Loevgaard\Consignor\ShipmentServer\Request\RequestInterface;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -72,17 +76,28 @@ class Client
      */
     protected $response;
 
-    public function __construct(string $actor, string $key, HttpClient $httpClient = null, RequestFactory $requestFactory = null, string $environment = 'production')
+    public function __construct(string $actor, string $key, array $plugins = [], HttpClient $httpClient = null, RequestFactory $requestFactory = null, string $environment = 'production')
     {
         $this->actor = $actor;
         $this->key = $key;
-        $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
+
+        $plugins[] = new ErrorPlugin();
+        $plugins[] = new HeaderSetPlugin([
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Accept' => 'application/json'
+        ]);
+        $this->httpClient = new PluginClient($httpClient ?: HttpClientDiscovery::find(), $plugins);
         $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
 
         Assert::that($environment)->choice([self::ENV_DEV, self::ENV_PRODUCTION]);
         $this->environment = $environment;
     }
 
+    /**
+     * @param RequestInterface $request
+     * @return array
+     * @throws InvalidJsonException
+     */
     public function doRequest(RequestInterface $request) : array
     {
         // resetting last request and response
@@ -99,18 +114,21 @@ class Client
         $body['command'] = $request->getCommand();
         $body = build_query($body);
 
-        // @todo use header plugin instead
-        $headers = [];
-        $headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        $headers['Accept'] = 'application/json';
-
         // create request
-        $this->request = $this->requestFactory->createRequest('POST', $url, $headers, $body);
+        $this->request = $this->requestFactory->createRequest('POST', $url, [], $body);
 
         // send request
         $this->response = $this->httpClient->sendRequest($this->request);
 
         return decodeJson((string)$this->response->getBody());
+    }
+
+    /**
+     * @return string
+     */
+    public function getActor(): string
+    {
+        return $this->actor;
     }
 
     /**
