@@ -1,8 +1,8 @@
 <?php
 namespace Loevgaard\Consignor\ShipmentServer\Request;
 
-use function Loevgaard\Consignor\ShipmentServer\encodeJson;
 use Loevgaard\Consignor\ShipmentServer\Exception\EncodeJsonException;
+use function Loevgaard\Consignor\ShipmentServer\encodeJson;
 
 abstract class Request implements RequestInterface
 {
@@ -16,11 +16,6 @@ abstract class Request implements RequestInterface
      */
     protected $options;
 
-    public function getHeaders() : array
-    {
-        return [];
-    }
-
     /**
      * @return array
      * @throws EncodeJsonException
@@ -28,11 +23,11 @@ abstract class Request implements RequestInterface
     public function getBody() : array
     {
         $body = [];
-        if($this->data) {
+        if ($this->data) {
             $body['data'] = encodeJson($this->data);
         }
 
-        if($this->options) {
+        if ($this->options) {
             $body['Options'] = encodeJson($this->options);
         }
 

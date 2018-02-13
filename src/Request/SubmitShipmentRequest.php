@@ -9,11 +9,6 @@ class SubmitShipmentRequest extends Request
         $this->options = $options;
     }
 
-    public function getMethod(): string
-    {
-        return 'POST';
-    }
-
     public function getCommand(): string
     {
         return RequestInterface::COMMAND_SUBMIT_SHIPMENT;

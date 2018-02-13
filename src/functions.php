@@ -33,4 +33,3 @@ function encodeJson(array $data) : string
 
     return $json;
 }
-

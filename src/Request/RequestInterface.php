@@ -3,75 +3,57 @@ namespace Loevgaard\Consignor\ShipmentServer\Request;
 
 interface RequestInterface
 {
+    // @todo convert camelcase to upper snake case
+    const COMMAND_GetShipmentAlternatives = 'GetShipmentAlternatives';
+    const COMMAND_GetPOArticles = 'GetPOArticles';
+    const COMMAND_GetLeadGroups = 'GetLeadGroups';
+    const COMMAND_GetLeadGroupDetails = 'GetLeadGroupDetails';
+    const COMMAND_GetDefaultShipment = 'GetDefaultShipment';
+    const COMMAND_GetDGList = 'GetDGList';
+    const COMMAND_GetDGEnums = 'GetDGEnums';
+    const COMMAND_GetDGArticleNoInfoList = 'GetDGArticleNoInfoList';
+    const COMMAND_GetContacts = 'GetContacts';
+    const COMMAND_GetContactProfile = 'GetContactProfile';
+    const COMMAND_AddShippingRulesPostCodeFile = 'AddShippingRulesPostCodeFile';
+    const COMMAND_ApplyDefaultsOnShipment = 'ApplyDefaultsOnShipment';
+    const COMMAND_CheckHealth = 'CheckHealth';
+    const COMMAND_CreateLeadShipment = 'CreateLeadShipment';
+    const COMMAND_CreateStack = 'CreateStack';
+    const COMMAND_DeleteContact = 'DeleteContact';
+    const COMMAND_DeleteLine = 'DeleteLine';
+    const COMMAND_DeleteShippingRulesPostCodeFile = 'DeleteShippingRulesPostCodeFile';
+    const COMMAND_DeleteShippingRules = 'DeleteShippingRules';
+    const COMMAND_DeletePackage = 'DeletePackage';
+    const COMMAND_DeleteShipment = 'DeleteShipment';
+    const COMMAND_DeleteStack = 'DeleteStack';
+    const COMMAND_GetBatchDetails = 'GetBatchDetails';
+    const COMMAND_GetBatchList = 'GetBatchList';
+    const COMMAND_GetBatchReport = 'GetBatchReport';
+    const COMMAND_GetBatchShipments = 'GetBatchShipments';
+    const COMMAND_GetDocument = 'GetDocument';
+    const COMMAND_GetDocumentList = 'GetDocumentList';
+    const COMMAND_GET_DRAFT_COUNT = 'GetDraftCount';
+    const COMMAND_GetDraftShipments = 'GetDraftShipments';
+    const COMMAND_GetDropPoints = 'GetDropPoints';
+    const COMMAND_GetInboxCount = 'GetInboxCount';
+    const COMMAND_GetInboxShipments = 'GetInboxShipments';
+    const COMMAND_GetInsuranceClaimURL = 'GetInsuranceClaimURL';
+    const COMMAND_GetInsurancePrice = 'GetInsurancePrice';
+    const COMMAND_GetPackage = 'GetPackage';
+    const COMMAND_GetPrinterFonts = 'GetPrinterFonts';
+    const COMMAND_GetProducts = 'GetProducts';
+    const COMMAND_GetSenderAddress = 'GetSenderAddress';
+    const COMMAND_GetShipment = 'GetShipment';
+    const COMMAND_GetShipmentPrice = 'GetShipmentPrice';
+    const COMMAND_GetStacks = 'GetStacks';
+    const COMMAND_GetStackShipments = 'GetStackShipments';
+    const COMMAND_GetTrackingURL = 'GetTrackingURL';
+    const COMMAND_ReprintLabels = 'ReprintLabels';
+    const COMMAND_SaveShipment = 'SaveShipment';
     const COMMAND_SUBMIT_SHIPMENT = 'SubmitShipment';
-
-    /**
-     * TODO add constants for these commands:
-    GetShipmentAlternatives
-    GetPOArticles
-    GetLeadGroups
-    GetLeadGroupDetails
-    GetDefaultShipment
-    GetDGList
-    GetDGEnums
-    GetDGArticleNoInfoList
-    GetContacts
-    GetContactProfile
-    AddShippingRulesPostCodeFile
-    ApplyDefaultsOnShipment
-    CheckHealth
-    CreateLeadShipment
-    CreateStack
-    DeleteContact
-    DeleteLine
-    DeleteShippingRulesPostCodeFile
-    DeleteShippingRules
-    DeletePackage
-    DeleteShipment
-    DeleteStack
-    GetBatchDetails
-    GetBatchList
-    GetBatchReport
-    GetBatchShipments
-    GetDocument
-    GetDocumentList
-    GetDraftCount
-    GetDraftShipments
-    GetDropPoints
-    GetInboxCount
-    GetInboxShipments
-    GetInsuranceClaimURL
-    GetInsurancePrice
-    GetPackage
-    GetPrinterFonts
-    GetProducts
-    GetSenderAddress
-    GetShipment
-    GetShipmentPrice
-    GetStacks
-    GetStackShipments
-    GetTrackingURL
-    ReprintLabels
-    SaveShipment
-    SubmitShipment
-    TransmitShipments
-    TransmitStack
-    ValidateShipment
-     */
-
-    /**
-     * Must return the HTTP method, i.e. POST, GET
-     *
-     * @return string
-     */
-    public function getMethod() : string;
-
-    /**
-     * Must return an array of headers for the request or an empty array if no headers should be set
-     *
-     * @return array
-     */
-    public function getHeaders() : array;
+    const COMMAND_TransmitShipments = 'TransmitShipments';
+    const COMMAND_TransmitStack = 'TransmitStack';
+    const COMMAND_ValidateShipment = 'ValidateShipment';
 
     /**
      * Must return a body array or an empty array if no body should be sent

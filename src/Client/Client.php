@@ -9,9 +9,14 @@ use Http\Message\RequestFactory;
 use Loevgaard\Consignor\ShipmentServer\Request\RequestInterface;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use function GuzzleHttp\Psr7\build_query;
+use function Loevgaard\Consignor\ShipmentServer\decodeJson;
 
 class Client
 {
+    const ENV_DEV = 'dev';
+    const ENV_PRODUCTION = 'production';
+
     /**
      * This URL is used for testing purposes
      *
@@ -74,7 +79,7 @@ class Client
         $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
         $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
 
-        Assert::that($environment)->choice(['dev', 'production']);
+        Assert::that($environment)->choice([self::ENV_DEV, self::ENV_PRODUCTION]);
         $this->environment = $environment;
     }
 
@@ -85,23 +90,27 @@ class Client
         $this->response = null;
 
         // deduce url
-        $url = $this->environment === 'dev' ? $this->testServerUrl : $this->productionServerUrl;
+        $url = $this->environment === self::ENV_DEV ? $this->testServerUrl : $this->productionServerUrl;
 
         // convert body to post string and inject auth and command params
-        // @todo ask consignor if it's true that ALL requests are POST requests
         $body = $request->getBody();
         $body['actor'] = $this->actor;
         $body['key'] = $this->key;
         $body['command'] = $request->getCommand();
-        $body = http_build_query($body);
+        $body = build_query($body);
+
+        // @todo use header plugin instead
+        $headers = [];
+        $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        $headers['Accept'] = 'application/json';
 
         // create request
-        $this->request = $this->requestFactory->createRequest($request->getMethod(), $url, $request->getHeaders(), $body);
+        $this->request = $this->requestFactory->createRequest('POST', $url, $headers, $body);
 
         // send request
         $this->response = $this->httpClient->sendRequest($this->request);
 
-        return $this->decodeJson((string)$this->response->getBody());
+        return decodeJson((string)$this->response->getBody());
     }
 
     /**
