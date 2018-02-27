@@ -16,4 +16,12 @@ interface ResponseInterface
      * @return bool
      */
     public function wasSuccessful() : bool;
+
+    /**
+     * Returns an array of errors
+     * Returns an empty array if there are not errors
+     *
+     * @return array
+     */
+    public function getErrors() : array;
 }

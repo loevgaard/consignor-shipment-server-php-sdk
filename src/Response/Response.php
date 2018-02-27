@@ -45,6 +45,15 @@ class Response implements ResponseInterface, \ArrayAccess
         return !isset($this->data['ErrorMessages']) && $this->response->getStatusCode() >= 200 && $this->response->getStatusCode() < 300;
     }
 
+    public function getErrors() : array
+    {
+        if(!isset($this->data['ErrorMessages'])) {
+            return [];
+        }
+
+        return $this->data['ErrorMessages'];
+    }
+
     public function offsetExists($offset)
     {
         return isset($this->data[$offset]);
