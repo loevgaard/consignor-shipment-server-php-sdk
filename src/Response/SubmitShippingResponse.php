@@ -2,18 +2,49 @@
 namespace Loevgaard\Consignor\ShipmentServer\Response;
 
 use Loevgaard\Consignor\ShipmentServer\Exception\InvalidBase64Exception;
+use Loevgaard\Consignor\ShipmentServer\Exception\InvalidLabelsOptionException;
+use Loevgaard\Consignor\ShipmentServer\Request\SubmitShipmentRequest;
 
 class SubmitShippingResponse extends Response
 {
     /**
-     * @param string $extension
+     * @var SubmitShipmentRequest
+     */
+    protected $request;
+
+    /**
      * @param string $prefix
      * @param string|null $dir
-     * @return \SplFileObject[]
+     * @return array|null
      * @throws InvalidBase64Exception
+     * @throws InvalidLabelsOptionException
      */
-    public function saveLabels(string $extension, string $prefix = 'label-', string $dir = null) : array
+    public function saveLabels(string $prefix = 'label-', string $dir = null) : ?array
     {
+        $labelsOption = $this->request->getOption('Labels');
+        if (!$labelsOption) {
+            throw new InvalidLabelsOptionException('The labels option is not set. This is unexpected.');
+        }
+
+        if ($labelsOption === 'none') {
+            return null;
+        }
+
+        $extensionMapping = [
+            'PNG' => 'png',
+            'PDF' => 'pdf',
+            'EPL' => 'epl',
+            'ZPL' => 'zpl',
+            'ZPLGK' => 'zplgk',
+            'DATAMAXLP2' => 'datamaxlp2'
+        ];
+
+        if (!isset($extensionMapping[$labelsOption])) {
+            throw new InvalidLabelsOptionException('The labels option `'.$labelsOption.'` was not found in: '.join(', ', array_keys($extensionMapping)));
+        }
+
+        $extension = $extensionMapping[$labelsOption];
+
         if (!$dir) {
             $dir = sys_get_temp_dir();
         }

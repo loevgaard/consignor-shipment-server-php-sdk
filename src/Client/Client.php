@@ -122,7 +122,7 @@ class Client
 
         $responseClass = $request->getResponseClass();
 
-        return new $responseClass($this->response);
+        return new $responseClass($this->response, $request);
     }
 
     /**

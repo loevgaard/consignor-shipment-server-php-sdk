@@ -2,6 +2,7 @@
 namespace Loevgaard\Consignor\ShipmentServer\Response;
 
 use Loevgaard\Consignor\ShipmentServer\Exception\InvalidJsonException;
+use Loevgaard\Consignor\ShipmentServer\Request\RequestInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use function Loevgaard\Consignor\ShipmentServer\decodeJson;
 
@@ -13,17 +14,24 @@ class Response implements ResponseInterface, \ArrayAccess
     protected $response;
 
     /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
      * @var array
      */
     protected $data;
 
     /**
      * @param PsrResponseInterface $response
+     * @param RequestInterface $request
      * @throws InvalidJsonException
      */
-    public function __construct(PsrResponseInterface $response)
+    public function __construct(PsrResponseInterface $response, RequestInterface $request)
     {
         $this->response = $response;
+        $this->request = $request;
         $this->data = decodeJson((string)$this->response->getBody());
     }
 
@@ -34,7 +42,7 @@ class Response implements ResponseInterface, \ArrayAccess
 
     public function wasSuccessful() : bool
     {
-        return $this->response->getStatusCode() >= 200 && $this->response->getStatusCode() < 300;
+        return !isset($this->data['ErrorMessages']) && $this->response->getStatusCode() >= 200 && $this->response->getStatusCode() < 300;
     }
 
     public function offsetExists($offset)
