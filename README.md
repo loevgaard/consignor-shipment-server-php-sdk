@@ -81,6 +81,10 @@ if ($response->wasSuccessful()) {
 }
 ```
 
+### Framework integration
+There is a Symfony bundle available that integrates this SDK:
+- [Consignor Shipment Server Bundle](https://github.com/loevgaard/consignor-shipment-server-bundle)
+
 ## Testing
 
 ```bash
