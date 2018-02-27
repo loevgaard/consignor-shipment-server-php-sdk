@@ -1,7 +1,7 @@
 # Consignor Shipment Server PHP SDK
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
-[![Software License][ico-license]](LICENSE.md)
+[![Software License][ico-license]](LICENSE)
 [![Build Status][ico-travis]][link-travis]
 [![Coverage Status][ico-scrutinizer]][link-scrutinizer]
 [![Quality Score][ico-code-quality]][link-code-quality]
@@ -89,7 +89,7 @@ $ composer test
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
 
 [ico-version]: https://img.shields.io/packagist/v/loevgaard/consignor-shipment-server-php-sdk.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
@@ -101,6 +101,3 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-travis]: https://travis-ci.org/loevgaard/consignor-shipment-server-php-sdk
 [link-scrutinizer]: https://scrutinizer-ci.com/g/loevgaard/consignor-shipment-server-php-sdk/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/loevgaard/consignor-shipment-server-php-sdk
-[link-downloads]: https://packagist.org/packages/loevgaard/consignor-shipment-server-php-sdk
-[link-author]: https://github.com/loevgaard
-[link-contributors]: ../../contributors
