@@ -15,7 +15,7 @@ class SubmitShippingResponse extends Response
     /**
      * @param string $prefix
      * @param string|null $dir
-     * @return array|null
+     * @return \SplFileObject[]|null
      * @throws InvalidBase64Exception
      * @throws InvalidLabelsOptionException
      */
