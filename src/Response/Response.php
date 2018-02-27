@@ -47,7 +47,7 @@ class Response implements ResponseInterface, \ArrayAccess
 
     public function getErrors() : array
     {
-        if(!isset($this->data['ErrorMessages'])) {
+        if(!isset($this->data['ErrorMessages']) || !is_array($this->data['ErrorMessages'])) {
             return [];
         }
 
