@@ -17,12 +17,68 @@ $ composer require loevgaard/consignor-shipment-server-php-sdk
 ```
 
 ## Usage
+Here is the example also used on [Consignors own page](https://consignor.zendesk.com/hc/da/articles/115002124314-Sample-Code-PHP). It submits a shipment and saves the labels as PDF's.
 
 ```php
 <?php
 require_once 'vendor/autoload.php';
 
-// TODO
+$actor = '63';
+$key = 'sample';
+$env = \Loevgaard\Consignor\ShipmentServer\Client\Client::ENV_DEV;
+$client = new \Loevgaard\Consignor\ShipmentServer\Client\Client($actor, $key, [], null, null, $env);
+
+$data = [
+    'Kind' => 1,
+    'ActorCSID' => $actor,
+    'ProdConceptID' => 1032,
+
+    'Addresses' => [
+        [
+            'Kind' => 2,
+            'Name1' => 'Test sender',
+            'Street1' => 'Test Address',
+            'PostCode' => '0580',
+            'City' => 'Oslo',
+            'CountryCode' => 'NO'],
+        [
+            'Kind' => 1,
+            'Name1' => 'Ola Testmann',
+            'Street1' => 'Test Address 1',
+            'PostCode' => '0580',
+            'City' => 'Oslo',
+            'CountryCode' => 'NO'
+        ]
+    ],
+
+    'Lines' => [
+        [
+            'PkgWeight' => 5000,
+            'Pkgs' => [
+                [
+                    'ItemNo' => 1
+                ]
+            ]
+        ]
+    ]
+];
+
+$options = [
+    'Labels' => 'PDF'
+];
+
+$request = new \Loevgaard\Consignor\ShipmentServer\Request\SubmitShipmentRequest($data, $options);
+
+/** @var \Loevgaard\Consignor\ShipmentServer\Response\SubmitShippingResponse $response */
+$response = $client->doRequest($request);
+
+if ($response->wasSuccessful()) {
+    echo "The request was successful, labels saved in: ".getcwd()."\n";
+    $response->saveLabels('label-', getcwd());
+} else {
+    echo "The request was not successful\n";
+    print_r($response->getErrors());
+}
 ```
 
 ## Testing
