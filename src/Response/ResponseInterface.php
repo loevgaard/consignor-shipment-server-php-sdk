@@ -5,10 +5,8 @@ interface ResponseInterface
 {
     /**
      * Must return the original JSON response
-     *
-     * @return string
      */
-    public function __toString();
+    public function __toString(): string;
 
     /**
      * Returns true if the request was successful

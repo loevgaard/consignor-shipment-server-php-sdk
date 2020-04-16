@@ -1,12 +1,13 @@
 <?php
 namespace Loevgaard\Consignor\ShipmentServer\Response;
 
-use Loevgaard\Consignor\ShipmentServer\Exception\InvalidJsonException;
+use ArrayAccess;
+use BadMethodCallException;
 use Loevgaard\Consignor\ShipmentServer\Request\RequestInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use function Loevgaard\Consignor\ShipmentServer\decodeJson;
 
-class Response implements ResponseInterface, \ArrayAccess
+class Response implements ResponseInterface, ArrayAccess
 {
     /**
      * @var PsrResponseInterface
@@ -23,11 +24,6 @@ class Response implements ResponseInterface, \ArrayAccess
      */
     protected $data;
 
-    /**
-     * @param PsrResponseInterface $response
-     * @param RequestInterface $request
-     * @throws InvalidJsonException
-     */
     public function __construct(PsrResponseInterface $response, RequestInterface $request)
     {
         $this->response = $response;
@@ -35,7 +31,7 @@ class Response implements ResponseInterface, \ArrayAccess
         $this->data = decodeJson((string)$this->response->getBody());
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->response->getBody();
     }
@@ -66,11 +62,11 @@ class Response implements ResponseInterface, \ArrayAccess
 
     public function offsetSet($offset, $value)
     {
-        throw new \BadMethodCallException('The response data can not be manipulated');
+        throw new BadMethodCallException('The response data can not be manipulated');
     }
 
     public function offsetUnset($offset)
     {
-        throw new \BadMethodCallException('The response data can not be manipulated');
+        throw new BadMethodCallException('The response data can not be manipulated');
     }
 }

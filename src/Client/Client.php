@@ -1,18 +1,18 @@
 <?php
+
 namespace Loevgaard\Consignor\ShipmentServer\Client;
 
 use Assert\Assert;
-use Http\Client\Common\Plugin\ErrorPlugin;
-use Http\Client\Common\PluginClient;
-use Http\Client\HttpClient;
-use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\MessageFactoryDiscovery;
-use Http\Message\RequestFactory;
+use Buzz\Client\Curl;
 use Loevgaard\Consignor\ShipmentServer\Request\RequestInterface;
 use Loevgaard\Consignor\ShipmentServer\Response\ResponseInterface;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
-use function GuzzleHttp\Psr7\build_query;
+use Psr\Http\Message\StreamFactoryInterface;
 
 class Client
 {
@@ -51,47 +51,72 @@ class Client
     protected $environment;
 
     /**
-     * @var HttpClient
+     * @var ClientInterface
      */
     protected $httpClient;
 
     /**
-     * @var RequestFactory
+     * @var RequestFactoryInterface
      */
     protected $requestFactory;
 
     /**
-     * This is the last request
+     * @var StreamFactoryInterface|null
+     */
+    private $streamFactory;
+
+    /**
+     * This is the last psr request
      *
      * @var PsrRequestInterface|null
      */
     protected $request;
 
     /**
-     * This is the last PSR response (differs from the response returned form the doRequest method)
+     * This is the last PSR response
      *
      * @var PsrResponseInterface|null
      */
     protected $response;
 
-    public function __construct(string $actor, string $key, array $plugins = [], HttpClient $httpClient = null, RequestFactory $requestFactory = null, string $environment = 'production')
-    {
+    public function __construct(
+        string $actor,
+        string $key,
+        string $environment = 'production',
+        ClientInterface $httpClient = null,
+        ResponseFactoryInterface $responseFactory = null,
+        RequestFactoryInterface $requestFactory = null,
+        StreamFactoryInterface $streamFactory = null
+    ) {
         $this->actor = $actor;
         $this->key = $key;
 
-        $plugins[] = new ErrorPlugin();
-        $this->httpClient = new PluginClient($httpClient ?: HttpClientDiscovery::find(), $plugins);
-        $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
+        $psr17Factory = new Psr17Factory();
+
+        if(null === $responseFactory) {
+            $responseFactory = $psr17Factory;
+        }
+
+        if(null === $requestFactory) {
+            $requestFactory = $psr17Factory;
+        }
+        $this->requestFactory = $requestFactory;
+
+        if(null === $streamFactory) {
+            $streamFactory = new $psr17Factory;
+        }
+        $this->streamFactory = $streamFactory;
+
+        if(null === $httpClient) {
+            $httpClient = new Curl($responseFactory);
+        }
+        $this->httpClient = $httpClient;
 
         Assert::that($environment)->choice([self::ENV_DEV, self::ENV_PRODUCTION]);
         $this->environment = $environment;
     }
 
-    /**
-     * @param RequestInterface $request
-     * @return ResponseInterface
-     */
-    public function doRequest(RequestInterface $request) : ResponseInterface
+    public function doRequest(RequestInterface $request): ResponseInterface
     {
         // resetting last request and response
         $this->request = null;
@@ -105,17 +130,15 @@ class Client
         $body['actor'] = $this->actor;
         $body['key'] = $this->key;
         $body['command'] = $request->getCommand();
-        $body = build_query($body);
-
-        // set headers
-        $headers = [
-            'Content-Type' => 'application/x-www-form-urlencoded',
-            'Accept' => 'application/json'
-        ];
 
         // create request
-        // @todo this is not necessarily the real request, since it can be manipulated by plugins, figure out a way to retrieve the correct one
-        $this->request = $this->requestFactory->createRequest('POST', $url, $headers, $body);
+        $psrRequest = $this->requestFactory->createRequest('POST', $url);
+        $psrRequest = $psrRequest
+            ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
+            ->withHeader('Accept', 'application/json')
+            ->withBody($this->streamFactory->createStream(http_build_query($body)))
+        ;
+        $this->request = $psrRequest;
 
         // send request
         $this->response = $this->httpClient->sendRequest($this->request);
@@ -125,25 +148,16 @@ class Client
         return new $responseClass($this->response, $request);
     }
 
-    /**
-     * @return string
-     */
     public function getActor(): string
     {
         return $this->actor;
     }
 
-    /**
-     * @return null|PsrRequestInterface
-     */
     public function getRequest(): ?PsrRequestInterface
     {
         return $this->request;
     }
 
-    /**
-     * @return null|PsrResponseInterface
-     */
     public function getResponse(): ?PsrResponseInterface
     {
         return $this->response;
